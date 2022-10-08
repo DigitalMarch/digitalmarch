@@ -6,11 +6,10 @@ struct Logger {
     log_level: LevelFilter
 }
 
-static mut LOGGER: Logger = Logger { log_level: LevelFilter::Info };
+static mut LOGGER: Logger = Logger { log_level: LevelFilter::Off };
 
 impl Log for Logger {
 
-    // Level: https://docs.rs/log/latest/src/log/lib.rs.html#425
     fn enabled(&self, metadata: &Metadata) -> bool {
         // if level filter less than or equal to incoming record then return true
         if metadata.level().to_level_filter() <= self.log_level {
@@ -43,14 +42,12 @@ impl Log for Logger {
             };
 
             // print formatted message to stdout
-            println!("{} {} : {}", prefix, timestamp, message)
+            // e.g. [!] Sun Jul 8 00:34:60 2001 : "Hello, World!"
+            println!("{} {} : \"{}\"", prefix, timestamp, message)
         }
     }
 
-    // flushing isn't needed
-    fn flush(&self) {
-        todo!()
-    }
+    fn flush(&self) { unimplemented!() }
 }
 
 pub fn init(level: LevelFilter) {
@@ -60,6 +57,6 @@ pub fn init(level: LevelFilter) {
 
         // pass static logger to log library
         log::set_logger(&LOGGER).expect("Unable to setup logger");
-        log::set_max_level(LOGGER.log_level)
+        log::set_max_level(LOGGER.log_level);
     }
 }

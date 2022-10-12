@@ -1,6 +1,5 @@
-mod index;
-mod about;
-mod projects;
+mod blog;
+mod site;
 
 use actix_web::web;
 use log::debug;
@@ -9,11 +8,10 @@ use log::debug;
 pub fn views_factory(app: &mut web::ServiceConfig) {
     debug!("Loading views factory");
 
-    // factory for index, about, projects page
-    app.route("/", web::get()
-        .to(index::index))
-        .route("/about", web::get()
-            .to(about::about))
-        .route("/projects", web::get()
-            .to(projects::projects));
+    site::site_factory(app);
+    blog::blog_factory(app);
+
+    app.service(actix_files::Files::new("/js", "./static/js"))
+        .service(actix_files::Files::new("/css", "./static/css"))
+        .service(actix_files::Files::new("/images", "./static/images"));
 }

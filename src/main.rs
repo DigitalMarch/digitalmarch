@@ -1,11 +1,10 @@
 mod logger;
-mod resources;
 mod views;
 
 use actix_web::*;
 use log::{debug, info, LevelFilter};
 
-const LOG_LEVEL: LevelFilter = LevelFilter::Info;
+const LOG_LEVEL: LevelFilter = LevelFilter::Debug;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -15,10 +14,8 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(|| {
         let app = App::new()
-            .configure(views::views_factory)
-            .configure(resources::resources_factory);
-
-        return app
+            .configure(views::views_factory);
+        app
     })
         .bind("127.0.0.1:8000")?
         .run()

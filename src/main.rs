@@ -2,7 +2,7 @@ mod logger;
 mod views;
 
 use actix_web::*;
-use log::{debug, info, LevelFilter};
+use log::{info, LevelFilter};
 
 const LOG_LEVEL: LevelFilter = LevelFilter::Debug;
 
@@ -13,13 +13,12 @@ async fn main() -> std::io::Result<()> {
     info!("Logger Started");
 
     HttpServer::new(|| {
-        let app = App::new()
-            .configure(views::views_factory);
+        let app = App::new().configure(views::views_factory);
         app
     })
-        .bind("127.0.0.1:8000")?
-        .run()
-        .await?;
+    .bind("127.0.0.1:8000")?
+    .run()
+    .await?;
 
     Ok(())
 }

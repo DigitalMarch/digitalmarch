@@ -1,35 +1,34 @@
 use chrono::{DateTime, Utc};
 use log;
-use log::{Record, Level, Metadata, LevelFilter, Log};
+use log::{LevelFilter, Log, Metadata, Record};
 
 struct Logger {
-    log_level: LevelFilter
+    log_level: LevelFilter,
 }
 
-static mut LOGGER: Logger = Logger { log_level: LevelFilter::Off };
+static mut LOGGER: Logger = Logger {
+    log_level: LevelFilter::Off,
+};
 
 impl Log for Logger {
-
     fn enabled(&self, metadata: &Metadata) -> bool {
         // if level filter less than or equal to incoming record then return true
         if metadata.level().to_level_filter() <= self.log_level {
-            return true
+            return true;
         } else {
-            return false
+            return false;
         }
     }
 
     fn log(&self, record: &Record) {
         // check if we want to print the record
         if self.enabled(record.metadata()) {
-
             // incoming record
             let message = record.args().to_string();
 
             let time: DateTime<Utc> = Utc::now();
             // "Sun Jul 8 00:34:60 2001"
             let timestamp = time.format("%c").to_string();
-
 
             // convert level to level_filter for matching
             let level_filter = record.level().to_level_filter();
@@ -38,7 +37,7 @@ impl Log for Logger {
                 LevelFilter::Info => "[*]",
                 LevelFilter::Debug => "[DEBUG]",
                 LevelFilter::Trace => "[TRACE]",
-                _ => "[UNKNOWN]"
+                _ => "[UNKNOWN]",
             };
 
             // print formatted message to stdout
@@ -47,7 +46,9 @@ impl Log for Logger {
         }
     }
 
-    fn flush(&self) { unimplemented!() }
+    fn flush(&self) {
+        unimplemented!()
+    }
 }
 
 pub fn init(level: LevelFilter) {
